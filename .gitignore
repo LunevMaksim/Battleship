@@ -1,0 +1,73 @@
+# Generated .gitignore file for: Java, Maven, PostgreSQL, IntelliJ, VSCode, Eclipse, NetBeans, macOS, Windows
+# Fixed and completed manually
+
+# Java & Maven
+*.class
+*.jar
+*.war
+*.ear
+*.logs
+.mtj.tmp/
+hs_err_pid*
+replay_pid*
+target/
+build/
+
+# Maven (Добавлены реальные правила)
+**/surefire-reports/
+**/failsafe-reports/
+*.exec
+*.dump
+
+# PostgreSQL (Файлы локальных бэкапов и логов БД)
+*.sql.bak
+*.sql.tmp
+pg_log/
+
+# IntelliJ IDEA (Добавлены реальные правила)
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# VSCode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# Eclipse (Добавлены реальные правила)
+.classpath
+.project
+.settings/
+.apt_generated/
+.factorypath
+.springBeans
+.sts4-cache/
+
+# NetBeans (Добавлены реальные правила)
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+# Common & OS (macOS, Windows)
+.DS_Store
+Thumbs.db
+desktop.ini
+*.log
+*.bak
+*.tmp
+*.swp
+*~
+
+# IDE and editor generated files
+*.sublime-*
+
+# Local environment files (Секреты и ключи)
+.env
+.env.local
+.env.*.local
