@@ -4,28 +4,42 @@ import org.battleship.model.State;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
 
-        String[][] playerOneTableCurr = new String[10][10];
+        String[][] playerOneTableCurr = arrangementTable(scanner);
+        String[][] playerTwoTableCurr = arrangementTable(scanner);
+
         String[][] playerOneTableEnemy = new String[10][10];
-
-        String[][] playerTwoTableCurr = new String[10][10];
         String[][] playerTwoTableEnemy = new String[10][10];
 
-
-        checkFour(scanner, playerOneTableCurr);
-        checkThree(scanner, playerOneTableCurr);
-        checkTwo(scanner, playerOneTableCurr);
-        checkOne(scanner, playerOneTableCurr);
-
+        int move = random.nextInt(2) + 1;
 
         printMatrix(playerOneTableCurr);
 
     }
+
+
+    // Запись для своего поля
+    static String[][] arrangementTable(Scanner scanner){
+        String[][] table = new String[10][10];
+
+        checkFour(scanner, table);
+        checkThree(scanner, table);
+        checkTwo(scanner, table);
+        checkOne(scanner, table);
+
+        cleaning(scanner);
+
+        return table;
+    }
+
+    // Перевод строчки в координаты и направление
     static List<Object> toCoordinates(String[] fourDeck, int deck){
         int len = (int)fourDeck[0].charAt(0) - 97; // Слева буквы
         int height = Integer.parseInt(fourDeck[1]) - 1; // Сверху цифры
@@ -41,6 +55,7 @@ public class Main {
         return objectList;
     }
 
+    // Расстановка кораблей на поле по направлению
     static void stagingOfFour(String[][] playerOneTableCurr, List<Object> coordinate){
         int len = (int) coordinate.get(0); // Буква
         int height = (int) coordinate.get(1); // Цифра
@@ -115,6 +130,14 @@ public class Main {
                 if (arr[i][j] == null) System.out.print(State.EMPTY_SPACE.getEmoji());
                 else System.out.print(arr[i][j] + " ");
             }
+            System.out.println();
+        }
+    }
+
+    static void cleaning(Scanner scanner) {
+        System.out.println("Готово! Нажмите Enter, чтобы передать ход другому игроку...");
+        scanner.nextLine();
+        for (int i = 0; i < 50; i++) {
             System.out.println();
         }
     }
