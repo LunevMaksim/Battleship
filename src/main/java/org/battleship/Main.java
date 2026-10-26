@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-import static org.battleship.model.State.PART_OF_SHIP;
+import static org.battleship.model.State.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -15,17 +15,51 @@ public class Main {
         Random random = new Random();
 
         String[][] playerOneTableCurr = arrangementTable(scanner);
-        // String[][] playerTwoTableCurr = arrangementTable(scanner);
+        String[][] playerTwoTableCurr = arrangementTable(scanner);
 
         String[][] playerOneTableEnemy = new String[10][10];
         String[][] playerTwoTableEnemy = new String[10][10];
 
-        int move = random.nextInt(2) + 1;
+        int move = random.nextInt(1, 3);
 
+        while (endGame(playerOneTableCurr, playerTwoTableCurr) == -1) {
 
+            System.out.println("Ходит " + move + " игрок");
 
-        printMatrix(playerOneTableCurr);
-        // printMatrix(playerTwoTableCurr);
+            int[] hit = inputCoordinateForHit(scanner);
+
+            if (move == 1){
+                if (playerTwoTableCurr[hit[0]][hit[1]].equals(PART_OF_SHIP.getEmoji())){
+                    System.out.println("Вы попали!");
+                    playerOneTableEnemy[hit[0]][hit[1]] = HIT.getEmoji();
+                    playerTwoTableCurr[hit[0]][hit[1]] = HIT.getEmoji();
+                    System.out.println("Поле противника:");
+                    printMatrix(playerOneTableEnemy);
+                } else {
+                    System.out.println("Вы промахнулись!");
+                    playerOneTableEnemy[hit[0]][hit[1]] = MISS.getEmoji();
+                    playerTwoTableCurr[hit[0]][hit[1]] = MISS.getEmoji();
+                    System.out.println("Поле противника:");
+                    printMatrix(playerOneTableEnemy);
+                    move = 2;
+                }
+            } else {
+                if (playerOneTableCurr[hit[0]][hit[1]].equals(PART_OF_SHIP.getEmoji())){
+                    System.out.println("Вы попали!");
+                    playerTwoTableEnemy[hit[0]][hit[1]] = HIT.getEmoji();
+                    playerOneTableCurr[hit[0]][hit[1]] = HIT.getEmoji();
+                    System.out.println("Поле противника:");
+                    printMatrix(playerTwoTableEnemy);
+                } else {
+                    System.out.println("Вы промахнулись!");
+                    playerTwoTableEnemy[hit[0]][hit[1]] = MISS.getEmoji();
+                    playerOneTableCurr[hit[0]][hit[1]] = MISS.getEmoji();
+                    System.out.println("Поле противника:");
+                    printMatrix(playerTwoTableEnemy);
+                    move = 1;
+                }
+            }
+        }
     }
 
     static int[] inputCoordinateForHit(Scanner scanner){
@@ -59,14 +93,20 @@ public class Main {
             }
         }
 
-        if (!noShipsOne) return 1;
-        if (!noShipsTwo) return 2;
+        if (noShipsOne) return 1;
+        if (noShipsTwo) return 2;
         return -1;
     }
 
     // Запись для своего поля
-    static String[][] arrangementTable(Scanner scanner){
+    static String[][] arrangementTable(Scanner scanner) {
         String[][] table = new String[10][10];
+
+        for (int i = 0; i < 10; i++) {
+            for (int j = 0; j < 10; j++) {
+                table[i][j] = State.EMPTY_SPACE.getEmoji();
+            }
+        }
 
         checkFour(scanner, table);
         checkThree(scanner, table);
