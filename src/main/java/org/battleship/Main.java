@@ -24,9 +24,18 @@ public class Main {
 
 
 
-
         printMatrix(playerOneTableCurr);
         // printMatrix(playerTwoTableCurr);
+    }
+
+    static int[] inputCoordinateForHit(Scanner scanner){
+        System.out.println("Введите координаты для удара: ");
+        String[] move = scanner.nextLine().split(" ");
+
+        int len = (int)move[0].charAt(0) - 97; // Слева буквы
+        int height = Integer.parseInt(move[1]) - 1; // Сверху цифры
+
+        return new int[]{len, height};
     }
 
     static int endGame(String[][] arrOne, String[][] arrTwo){
