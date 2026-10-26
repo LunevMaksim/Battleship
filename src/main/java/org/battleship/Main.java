@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
+import static org.battleship.model.State.PART_OF_SHIP;
+
 public class Main {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
@@ -21,10 +23,37 @@ public class Main {
         int move = random.nextInt(2) + 1;
 
 
+
+
         printMatrix(playerOneTableCurr);
         // printMatrix(playerTwoTableCurr);
     }
 
+    static int endGame(String[][] arrOne, String[][] arrTwo){
+        boolean noShipsOne = true;
+        boolean noShipsTwo = true;
+
+        for (int i = 0; i < arrOne.length; i++) {
+            for (int j = 0; j < arrOne.length; j++) {
+                if (arrOne[i][j].equals(PART_OF_SHIP.getEmoji())){
+                    noShipsOne = false;
+                    break;
+                }
+            }
+        }
+        for (int i = 0; i < arrTwo.length; i++) {
+            for (int j = 0; j < arrTwo.length; j++) {
+                if (arrTwo[i][j].equals(PART_OF_SHIP.getEmoji())){
+                    noShipsTwo = false;
+                    break;
+                }
+            }
+        }
+
+        if (!noShipsOne) return 1;
+        if (!noShipsTwo) return 2;
+        return -1;
+    }
 
     // Запись для своего поля
     static String[][] arrangementTable(Scanner scanner){
@@ -66,22 +95,22 @@ public class Main {
         switch (direction){
             case 'r':
                 for (int i = height; i < height + deck; i++) {
-                    playerOneTableCurr[len][i] = State.PART_OF_SHIP.getEmoji();
+                    playerOneTableCurr[len][i] = PART_OF_SHIP.getEmoji();
                 }
                 break;
             case 'd':
                 for (int i = len; i < len + deck; i++) {
-                    playerOneTableCurr[i][height] = State.PART_OF_SHIP.getEmoji();
+                    playerOneTableCurr[i][height] = PART_OF_SHIP.getEmoji();
                 }
                 break;
             case 'l':
                 for (int i = height; i > height - deck; i--) {
-                    playerOneTableCurr[len][i] = State.PART_OF_SHIP.getEmoji();
+                    playerOneTableCurr[len][i] = PART_OF_SHIP.getEmoji();
                 }
                 break;
             case 'u':
                 for (int i = len; i > len - deck; i--) {
-                    playerOneTableCurr[i][height] = State.PART_OF_SHIP.getEmoji();
+                    playerOneTableCurr[i][height] = PART_OF_SHIP.getEmoji();
                 }
                 break;
         }
