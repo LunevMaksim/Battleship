@@ -13,15 +13,16 @@ public class Main {
         Random random = new Random();
 
         String[][] playerOneTableCurr = arrangementTable(scanner);
-        String[][] playerTwoTableCurr = arrangementTable(scanner);
+        // String[][] playerTwoTableCurr = arrangementTable(scanner);
 
         String[][] playerOneTableEnemy = new String[10][10];
         String[][] playerTwoTableEnemy = new String[10][10];
 
         int move = random.nextInt(2) + 1;
 
-        printMatrix(playerOneTableCurr);
 
+        printMatrix(playerOneTableCurr);
+        // printMatrix(playerTwoTableCurr);
     }
 
 
@@ -125,12 +126,35 @@ public class Main {
     }
 
     static void printMatrix(String[][] arr){
+        System.out.print("    ");
+        for (int j = 1; j <= 3; j++) {
+            System.out.print(j + "  ");
+        }
+        System.out.print(" ");
+        for (int j = 4; j <= 7; j++) {
+            System.out.print(j + "  ");
+        }
+        System.out.print(" ");
+        for (int j = 8; j <= 10; j++) {
+            System.out.print(j + "  ");
+        }
+
+        System.out.println();
+
+        char rowLetter = 'a';
+
         for (int i = 0; i < 10; i++) {
+            System.out.print(rowLetter + "  ");
+
             for (int j = 0; j < 10; j++) {
-                if (arr[i][j] == null) System.out.print(State.EMPTY_SPACE.getEmoji());
-                else System.out.print(arr[i][j] + " ");
+                if (arr[i][j] == null) {
+                    System.out.print(State.EMPTY_SPACE.getEmoji() + " ");
+                } else {
+                    System.out.print(arr[i][j] + " ");
+                }
             }
             System.out.println();
+            rowLetter++;
         }
     }
 
