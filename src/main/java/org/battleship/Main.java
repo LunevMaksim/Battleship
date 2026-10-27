@@ -24,7 +24,20 @@ public class Main {
 
         while (endGame(playerOneTableCurr, playerTwoTableCurr) == -1) {
 
-            System.out.println("Ходит " + move + " игрок");
+            System.out.println("=== ХОД ИГРОКА " + move + " ===");
+
+            if (move == 1) {
+                System.out.println("Ваши корабли:");
+                printMatrix(playerOneTableCurr);
+                System.out.println("\nПоле противника:");
+                printMatrix(playerOneTableEnemy);
+            } else {
+                System.out.println("Ваши корабли:");
+                printMatrix(playerTwoTableCurr);
+                System.out.println("\nПоле противника:");
+                printMatrix(playerTwoTableEnemy);
+            }
+            System.out.println();
 
             int[] hit = inputCoordinateForHit(scanner);
 
@@ -33,14 +46,10 @@ public class Main {
                     System.out.println("Вы попали!");
                     playerOneTableEnemy[hit[0]][hit[1]] = HIT.getEmoji();
                     playerTwoTableCurr[hit[0]][hit[1]] = HIT.getEmoji();
-                    System.out.println("Поле противника:");
-                    printMatrix(playerOneTableEnemy);
                 } else {
                     System.out.println("Вы промахнулись!");
                     playerOneTableEnemy[hit[0]][hit[1]] = MISS.getEmoji();
                     playerTwoTableCurr[hit[0]][hit[1]] = MISS.getEmoji();
-                    System.out.println("Поле противника:");
-                    printMatrix(playerOneTableEnemy);
                     move = 2;
                 }
             } else {
@@ -48,18 +57,28 @@ public class Main {
                     System.out.println("Вы попали!");
                     playerTwoTableEnemy[hit[0]][hit[1]] = HIT.getEmoji();
                     playerOneTableCurr[hit[0]][hit[1]] = HIT.getEmoji();
-                    System.out.println("Поле противника:");
-                    printMatrix(playerTwoTableEnemy);
                 } else {
                     System.out.println("Вы промахнулись!");
                     playerTwoTableEnemy[hit[0]][hit[1]] = MISS.getEmoji();
                     playerOneTableCurr[hit[0]][hit[1]] = MISS.getEmoji();
-                    System.out.println("Поле противника:");
-                    printMatrix(playerTwoTableEnemy);
                     move = 1;
                 }
             }
         }
+
+        printWinner(playerOneTableCurr, playerTwoTableCurr);
+    }
+
+    static void printWinner(String[][] playerOneTableCurr, String[][] playerTwoTableCurr){
+        int winner = endGame(playerOneTableCurr, playerTwoTableCurr);
+
+        System.out.println("=== ИГРА ЗАКОНЧЕНА!!! ===");
+        System.out.println("=== ПОБЕДИТЕЛЬ - ИГРОК " + winner + " ===");
+
+        System.out.println("Поле игрока 1:");
+        printMatrix(playerOneTableCurr);
+        System.out.println("Поле игрока 2:");
+        printMatrix(playerTwoTableCurr);
     }
 
     static int[] inputCoordinateForHit(Scanner scanner){
