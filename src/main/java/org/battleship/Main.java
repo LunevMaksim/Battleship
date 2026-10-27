@@ -20,6 +20,9 @@ public class Main {
         String[][] playerOneTableEnemy = new String[10][10];
         String[][] playerTwoTableEnemy = new String[10][10];
 
+        boolean playerOneHasMine = true;
+        boolean playerTwoHasMine = true;
+
         int move = random.nextInt(1, 3);
 
         while (endGame(playerOneTableCurr, playerTwoTableCurr) == -1) {
@@ -67,6 +70,42 @@ public class Main {
         }
 
         printWinner(playerOneTableCurr, playerTwoTableCurr);
+    }
+
+    static boolean hitMine(Scanner scanner, String[][] playerTableEnemy, String[][] playerTableCurr){
+        int[] hit = inputCoordinateForHit(scanner);
+
+        boolean hitInShip = false;
+
+        int startX = Math.max(0, hit[0] - 1);
+        int endX = Math.min(9, hit[0] + 1);
+        int startY = Math.max(0, hit[1] - 1);
+        int endY = Math.min(9, hit[1] + 1);
+
+        for (int i = startX; i <= endX ; i++) {
+            for (int j = startY; j <= endY; j++) {
+                if (playerTableEnemy[i][j].equals(PART_OF_SHIP.getEmoji())){
+                    hitInShip = true;
+                    playerTableEnemy[i][j] = HIT.getEmoji();
+                    playerTableCurr[i][j] = HIT.getEmoji();
+                }
+                else if (!playerTableEnemy[i][j].equals(PART_OF_SHIP.getEmoji()) && playerTableEnemy[i][j].equals(EMPTY_SPACE.getEmoji())) {
+                    playerTableEnemy[i][j] = MISS.getEmoji();
+                    playerTableCurr[i][j] = MISS.getEmoji();
+                }
+            }
+        }
+        return hitInShip;
+    }
+
+    static boolean availabilityMine(Scanner scanner, boolean hasMine){
+        if (!hasMine) return false;
+
+        System.out.println("БОНУС: у вас есть мина для удара радиусом 3х3. Хотите использовать?");
+        String string = scanner.next().toLowerCase();
+
+        if (string.equals("да") || string.equals("yes")) return false;
+        return true;
     }
 
     static void printWinner(String[][] playerOneTableCurr, String[][] playerTwoTableCurr){
