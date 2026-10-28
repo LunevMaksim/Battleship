@@ -10,6 +10,10 @@ import java.util.Scanner;
 import static org.battleship.model.State.*;
 
 public class Main {
+
+    static final int BOARD_SIZE = 10;
+    static final char ASCII_OFFSET = 'a';
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
@@ -17,8 +21,8 @@ public class Main {
         String[][] playerOneTableCurr = arrangementTable(scanner);
         String[][] playerTwoTableCurr = arrangementTable(scanner);
 
-        String[][] playerOneTableEnemy = new String[10][10];
-        String[][] playerTwoTableEnemy = new String[10][10];
+        String[][] playerOneTableEnemy = new String[BOARD_SIZE][BOARD_SIZE];
+        String[][] playerTwoTableEnemy = new String[BOARD_SIZE][BOARD_SIZE];
 
         boolean playerOneHasMine = true;
         boolean playerTwoHasMine = true;
@@ -43,15 +47,13 @@ public class Main {
             System.out.println();
 
             if (move == 1) {
-                // Спрашиваем, хочет ли игрок использовать мину
                 boolean wantToUseMine = availabilityMine(scanner, playerOneHasMine);
 
                 if (wantToUseMine) {
-                    playerOneHasMine = false; // Сжигаем мину навсегда
+                    playerOneHasMine = false;
                     boolean nextStep = hitMine(scanner, playerTwoTableCurr, playerOneTableEnemy);
-                    move = nextStep ? 1 : 2; // При попадании миной ход сохраняется, при промахе — переходит
+                    move = nextStep ? 1 : 2;
                 } else {
-                    // Обычный выстрел, если мины нет или игрок отказался
                     int[] hit = inputCoordinateForHit(scanner);
                     if (playerTwoTableCurr[hit[0]][hit[1]].equals(PART_OF_SHIP.getEmoji())){
                         System.out.println("Вы попали!");
@@ -65,7 +67,6 @@ public class Main {
                     }
                 }
             } else {
-                // Аналогично для второго игрока
                 boolean wantToUseMine = availabilityMine(scanner, playerTwoHasMine);
 
                 if (wantToUseMine) {
@@ -142,11 +143,33 @@ public class Main {
     }
 
     static int[] inputCoordinateForHit(Scanner scanner){
-        System.out.println("Введите координаты для удара: ");
-        String[] move = scanner.nextLine().split(" ");
+        int len;
+        int height;
 
-        int len = (int)move[0].charAt(0) - 97; // Слева буквы
-        int height = Integer.parseInt(move[1]) - 1; // Сверху цифры
+        while (true){
+            System.out.println("Введите координаты для удара (например: a 1): ");
+            String input = scanner.nextLine();
+            String[] move = input.split(" ");
+
+            if (move.length < 2){
+                System.out.println("Ошибка! Введите пару координат через пробел (Формат: a 1)");
+                continue;
+            }
+
+            try {
+                len = move[0].charAt(0) - ASCII_OFFSET;
+                height = Integer.parseInt(move[1]) - 1;
+            } catch (NumberFormatException e) {
+                System.out.println("Ошибка! Вторым параметром должна быть цифра от 1 до 10.");
+                continue;
+            }
+
+            if (len < 0 || len >= BOARD_SIZE || height < 0 || height >= BOARD_SIZE){
+                System.out.println("Ошибка! Координаты должны быть в интервале [a - j] и [1 - 10]");
+                continue;
+            }
+            break;
+        }
 
         return new int[]{len, height};
     }
@@ -155,16 +178,16 @@ public class Main {
         boolean noShipsOne = true;
         boolean noShipsTwo = true;
 
-        for (int i = 0; i < arrOne.length; i++) {
-            for (int j = 0; j < arrOne.length; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 if (arrOne[i][j].equals(PART_OF_SHIP.getEmoji())){
                     noShipsOne = false;
                     break;
                 }
             }
         }
-        for (int i = 0; i < arrTwo.length; i++) {
-            for (int j = 0; j < arrTwo.length; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 if (arrTwo[i][j].equals(PART_OF_SHIP.getEmoji())){
                     noShipsTwo = false;
                     break;
@@ -179,10 +202,10 @@ public class Main {
 
     // Запись для своего поля
     static String[][] arrangementTable(Scanner scanner) {
-        String[][] table = new String[10][10];
+        String[][] table = new String[BOARD_SIZE][BOARD_SIZE];
 
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 table[i][j] = State.EMPTY_SPACE.getEmoji();
             }
         }
@@ -199,7 +222,7 @@ public class Main {
 
     // Перевод строчки в координаты и направление
     static List<Object> toCoordinates(String[] fourDeck, int deck){
-        int len = (int)fourDeck[0].charAt(0) - 97; // Слева буквы
+        int len = (int)fourDeck[0].charAt(0) - ASCII_OFFSET; // Слева буквы
         int height = Integer.parseInt(fourDeck[1]) - 1; // Сверху цифры
         char direction = fourDeck[2].charAt(0); // Направление корабля
 
@@ -300,10 +323,10 @@ public class Main {
 
         char rowLetter = 'a';
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < BOARD_SIZE; i++) {
             System.out.print(rowLetter + "  ");
 
-            for (int j = 0; j < 10; j++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
                 if (arr[i][j] == null) {
                     System.out.print(State.EMPTY_SPACE.getEmoji() + " ");
                 } else {
