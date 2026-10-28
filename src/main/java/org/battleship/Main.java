@@ -42,31 +42,51 @@ public class Main {
             }
             System.out.println();
 
-            int[] hit = inputCoordinateForHit(scanner);
+            if (move == 1) {
+                // Спрашиваем, хочет ли игрок использовать мину
+                boolean wantToUseMine = availabilityMine(scanner, playerOneHasMine);
 
-            if (move == 1){
-                if (playerTwoTableCurr[hit[0]][hit[1]].equals(PART_OF_SHIP.getEmoji())){
-                    System.out.println("Вы попали!");
-                    playerOneTableEnemy[hit[0]][hit[1]] = HIT.getEmoji();
-                    playerTwoTableCurr[hit[0]][hit[1]] = HIT.getEmoji();
+                if (wantToUseMine) {
+                    playerOneHasMine = false; // Сжигаем мину навсегда
+                    boolean nextStep = hitMine(scanner, playerTwoTableCurr, playerOneTableEnemy);
+                    move = nextStep ? 1 : 2; // При попадании миной ход сохраняется, при промахе — переходит
                 } else {
-                    System.out.println("Вы промахнулись!");
-                    playerOneTableEnemy[hit[0]][hit[1]] = MISS.getEmoji();
-                    playerTwoTableCurr[hit[0]][hit[1]] = MISS.getEmoji();
-                    move = 2;
+                    // Обычный выстрел, если мины нет или игрок отказался
+                    int[] hit = inputCoordinateForHit(scanner);
+                    if (playerTwoTableCurr[hit[0]][hit[1]].equals(PART_OF_SHIP.getEmoji())){
+                        System.out.println("Вы попали!");
+                        playerOneTableEnemy[hit[0]][hit[1]] = HIT.getEmoji();
+                        playerTwoTableCurr[hit[0]][hit[1]] = HIT.getEmoji();
+                    } else {
+                        System.out.println("Вы промахнулись!");
+                        playerOneTableEnemy[hit[0]][hit[1]] = MISS.getEmoji();
+                        playerTwoTableCurr[hit[0]][hit[1]] = MISS.getEmoji();
+                        move = 2;
+                    }
                 }
             } else {
-                if (playerOneTableCurr[hit[0]][hit[1]].equals(PART_OF_SHIP.getEmoji())){
-                    System.out.println("Вы попали!");
-                    playerTwoTableEnemy[hit[0]][hit[1]] = HIT.getEmoji();
-                    playerOneTableCurr[hit[0]][hit[1]] = HIT.getEmoji();
+                // Аналогично для второго игрока
+                boolean wantToUseMine = availabilityMine(scanner, playerTwoHasMine);
+
+                if (wantToUseMine) {
+                    playerTwoHasMine = false; // Сжигаем мину навсегда
+                    boolean nextStep = hitMine(scanner, playerOneTableCurr, playerTwoTableEnemy);
+                    move = nextStep ? 2 : 1;
                 } else {
-                    System.out.println("Вы промахнулись!");
-                    playerTwoTableEnemy[hit[0]][hit[1]] = MISS.getEmoji();
-                    playerOneTableCurr[hit[0]][hit[1]] = MISS.getEmoji();
-                    move = 1;
+                    int[] hit = inputCoordinateForHit(scanner);
+                    if (playerOneTableCurr[hit[0]][hit[1]].equals(PART_OF_SHIP.getEmoji())){
+                        System.out.println("Вы попали!");
+                        playerTwoTableEnemy[hit[0]][hit[1]] = HIT.getEmoji();
+                        playerOneTableCurr[hit[0]][hit[1]] = HIT.getEmoji();
+                    } else {
+                        System.out.println("Вы промахнулись!");
+                        playerTwoTableEnemy[hit[0]][hit[1]] = MISS.getEmoji();
+                        playerOneTableCurr[hit[0]][hit[1]] = MISS.getEmoji();
+                        move = 1;
+                    }
                 }
             }
+
         }
 
         printWinner(playerOneTableCurr, playerTwoTableCurr);
@@ -102,9 +122,10 @@ public class Main {
         if (!hasMine) return false;
 
         System.out.println("БОНУС: у вас есть мина для удара радиусом 3х3. Хотите использовать?");
-        String string = scanner.next().toLowerCase();
+        String string = scanner.nextLine().toLowerCase();
 
-        if (string.equals("да") || string.equals("yes")) return false;
+        if (string.equals("нет") || string.equals("no")) return false;
+
         return true;
     }
 
