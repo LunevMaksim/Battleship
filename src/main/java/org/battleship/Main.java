@@ -200,6 +200,22 @@ public class Main {
         return -1;
     }
 
+    // Проверка: поместится ли корабль на доске в зависимости от направления
+    static boolean isOutOfBounds(int len, int height, char direction, int deck) {
+        switch (direction) {
+            case 'r': // вправо
+                return height + deck > BOARD_SIZE;
+            case 'l': // влево
+                return height - deck + 1 < 0;
+            case 'd': // вниз
+                return len + deck > BOARD_SIZE;
+            case 'u': // вверх
+                return len - deck + 1 < 0;
+            default:
+                return true;
+        }
+    }
+
     // Запись для своего поля
     static String[][] arrangementTable(Scanner scanner) {
         String[][] table = new String[BOARD_SIZE][BOARD_SIZE];
@@ -221,18 +237,49 @@ public class Main {
     }
 
     // Перевод строчки в координаты и направление
-    static List<Object> toCoordinates(String[] fourDeck, int deck){
-        int len = (int)fourDeck[0].charAt(0) - ASCII_OFFSET; // Слева буквы
-        int height = Integer.parseInt(fourDeck[1]) - 1; // Сверху цифры
-        char direction = fourDeck[2].charAt(0); // Направление корабля
+    static List<Object> inputCoordinateForShip(Scanner scanner, int deck) {
+        int len;
+        int height;
+        char direction;
+
+        while (true) {
+            System.out.println("Введите координаты и направление (например: a 1 r) [r-вправо, l-влево, d-вниз, u-вверх]: ");
+            String input = scanner.nextLine().toLowerCase();
+            String[] parts = input.split(" ");
+
+            if (parts.length < 3) {
+                System.out.println("Ошибка! Нужно ввести координаты и направление через пробел (например: a 1 r)");
+                continue;
+            }
+
+            try {
+                len = parts[0].charAt(0) - ASCII_OFFSET;
+                height = Integer.parseInt(parts[1]) - 1;
+            } catch (NumberFormatException e) {
+                System.out.println("Ошибка! Вторым параметром должна быть цифра.");
+                continue;
+            }
+
+            direction = parts[2].charAt(0);
+
+            if (len < 0 || len >= BOARD_SIZE || height < 0 || height >= BOARD_SIZE) {
+                System.out.println("Ошибка! Начальные координаты вне пределов доски.");
+                continue;
+            }
+
+            if (isOutOfBounds(len, height, direction, deck)) {
+                System.out.println("Ошибка! Корабль такой длины не поместится в этом направлении.");
+                continue;
+            }
+
+            break;
+        }
 
         List<Object> objectList = new ArrayList<>();
-
         objectList.add(len);
         objectList.add(height);
         objectList.add(direction);
         objectList.add(deck);
-
         return objectList;
     }
 
@@ -269,18 +316,16 @@ public class Main {
 
     static void checkFour(Scanner scanner, String[][] arr){
         System.out.println("Расставьте корабли:");
-        System.out.println("Первый: 4-х палубный");
-        String[] fourDeck = scanner.nextLine().split(" ");
-        List<Object> coordinateFour = toCoordinates(fourDeck, 4);
+        System.out.println("4-х палубный корабль:");
+        List<Object> coordinateFour = inputCoordinateForShip(scanner, 4);
         stagingOfFour(arr, coordinateFour);
     }
 
     static void checkThree(Scanner scanner, String[][] arr){
         for (int i = 0; i < 2; i++) {
             System.out.println("Расставьте корабли:");
-            System.out.println("Первый: 3-х палубный");
-            String[] threeDeck = scanner.nextLine().split(" ");
-            List<Object> coordinateThree = toCoordinates(threeDeck, 3);
+            System.out.println((i + 1) + "-й: 3-х палубный");
+            List<Object> coordinateThree = inputCoordinateForShip(scanner, 3);
             stagingOfFour(arr, coordinateThree);
         }
     }
@@ -288,9 +333,8 @@ public class Main {
     static void checkTwo(Scanner scanner, String[][] arr){
         for (int i = 0; i < 3; i++) {
             System.out.println("Расставьте корабли:");
-            System.out.println("Первый: 2-х палубный");
-            String[] twoDeck = scanner.nextLine().split(" ");
-            List<Object> coordinateTwo = toCoordinates(twoDeck, 2);
+            System.out.println((i + 1) + "-й: 2-х палубный");
+            List<Object> coordinateTwo = inputCoordinateForShip(scanner, 2);
             stagingOfFour(arr, coordinateTwo);
         }
     }
@@ -298,9 +342,8 @@ public class Main {
     static void checkOne(Scanner scanner, String[][] arr){
         for (int i = 0; i < 4; i++) {
             System.out.println("Расставьте корабли:");
-            System.out.println("Первый: 1-о палубный");
-            String[] oneDeck = scanner.nextLine().split(" ");
-            List<Object> coordinateOne = toCoordinates(oneDeck, 1);
+            System.out.println((i + 1) + "-й: 1-о палубный");
+            List<Object> coordinateOne = inputCoordinateForShip(scanner, 1);
             stagingOfFour(arr, coordinateOne);
         }
     }
