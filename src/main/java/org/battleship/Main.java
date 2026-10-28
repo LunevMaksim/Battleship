@@ -236,8 +236,40 @@ public class Main {
         return table;
     }
 
+    // Проверяет, свободна ли сама точка и все её соседи
+    static boolean canPlaceShip(String[][] board, int len, int height, char direction, int deck) {
+        int startX = len, endX = len;
+        int startY = height, endY = height;
+
+        switch (direction) {
+            case 'r': endY = height + deck - 1; break;
+            case 'l': startY = height - deck + 1; break;
+            case 'd': endX = len + deck - 1; break;
+            case 'u': startX = len - deck + 1; break;
+        }
+
+        for (int i = startX; i <= endX; i++) {
+            for (int j = startY; j <= endY; j++) {
+
+                int rMin = Math.max(0, i - 1);
+                int rMax = Math.min(BOARD_SIZE - 1, i + 1);
+                int cMin = Math.max(0, j - 1);
+                int cMax = Math.min(BOARD_SIZE - 1, j + 1);
+
+                for (int r = rMin; r <= rMax; r++) {
+                    for (int c = cMin; c <= cMax; c++) {
+                        if (board[r][c].equals(PART_OF_SHIP.getEmoji())) {
+                            return false;
+                        }
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     // Перевод строчки в координаты и направление
-    static List<Object> inputCoordinateForShip(Scanner scanner, int deck) {
+    static List<Object> inputCoordinateForShip(Scanner scanner, String[][] board, int deck) {
         int len;
         int height;
         char direction;
@@ -269,6 +301,11 @@ public class Main {
 
             if (isOutOfBounds(len, height, direction, deck)) {
                 System.out.println("Ошибка! Корабль такой длины не поместится в этом направлении.");
+                continue;
+            }
+
+            if (!canPlaceShip(board, len, height, direction, deck)) {
+                System.out.println("Ошибка! Корабль пересекается с другим или касается его (нужен интервал в 1 клетку).");
                 continue;
             }
 
@@ -317,7 +354,7 @@ public class Main {
     static void checkFour(Scanner scanner, String[][] arr){
         System.out.println("Расставьте корабли:");
         System.out.println("4-х палубный корабль:");
-        List<Object> coordinateFour = inputCoordinateForShip(scanner, 4);
+        List<Object> coordinateFour = inputCoordinateForShip(scanner, arr, 4);
         stagingOfFour(arr, coordinateFour);
     }
 
@@ -325,7 +362,7 @@ public class Main {
         for (int i = 0; i < 2; i++) {
             System.out.println("Расставьте корабли:");
             System.out.println((i + 1) + "-й: 3-х палубный");
-            List<Object> coordinateThree = inputCoordinateForShip(scanner, 3);
+            List<Object> coordinateThree = inputCoordinateForShip(scanner, arr, 3);
             stagingOfFour(arr, coordinateThree);
         }
     }
@@ -334,7 +371,7 @@ public class Main {
         for (int i = 0; i < 3; i++) {
             System.out.println("Расставьте корабли:");
             System.out.println((i + 1) + "-й: 2-х палубный");
-            List<Object> coordinateTwo = inputCoordinateForShip(scanner, 2);
+            List<Object> coordinateTwo = inputCoordinateForShip(scanner, arr, 2);
             stagingOfFour(arr, coordinateTwo);
         }
     }
@@ -343,7 +380,7 @@ public class Main {
         for (int i = 0; i < 4; i++) {
             System.out.println("Расставьте корабли:");
             System.out.println((i + 1) + "-й: 1-о палубный");
-            List<Object> coordinateOne = inputCoordinateForShip(scanner, 1);
+            List<Object> coordinateOne = inputCoordinateForShip(scanner, arr, 1);
             stagingOfFour(arr, coordinateOne);
         }
     }
