@@ -12,6 +12,14 @@ public class Board {
         initializeBoard();
     }
 
+    public int getSize() {
+        return size;
+    }
+
+    public String[][] getGrid() {
+        return grid;
+    }
+
     // Инициализация пустого поля
     private void initializeBoard() {
         for (int i = 0; i < size; i++) {
@@ -19,10 +27,6 @@ public class Board {
                 grid[i][j] = EMPTY_SPACE.getEmoji();
             }
         }
-    }
-
-    public String[][] getGrid() {
-        return grid;
     }
 
     // Печать матрицы
@@ -67,7 +71,7 @@ public class Board {
         }
     }
 
-    // Проверка касаний и пересечений (правило ауры)
+    // Проверка касаний и пересечений
     public boolean canPlaceShip(int len, int height, char direction, int deck) {
         int startX = len, endX = len;
         int startY = height, endY = height;
@@ -121,10 +125,10 @@ public class Board {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 if (grid[i][j].equals(PART_OF_SHIP.getEmoji())) {
-                    return false; // Нашли живой корабль
+                    return false;
                 }
             }
         }
-        return true; // Кораблей не осталось
+        return true;
     }
 }
