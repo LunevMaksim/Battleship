@@ -1,6 +1,7 @@
 package org.battleship.player;
 
 import org.battleship.model.Board;
+import org.battleship.model.Cell;
 
 public class Player {
     private final int id;
@@ -27,17 +28,13 @@ public class Player {
         return enemyBoard;
     }
 
-    public boolean hasMine() {
+    public boolean getHasMine() {
         return hasMine;
-    }
-
-    public void useMine() {
-        this.hasMine = false;
     }
 
     // Проверка, остались ли у игрока живые корабли
     public boolean hasAliveShips() {
-        String[][] grid = currBoard.getGrid();
+        Cell[][] grid = currBoard.getGrid();
         int size = currBoard.getSize();
 
         for (int i = 0; i < size; i++) {
