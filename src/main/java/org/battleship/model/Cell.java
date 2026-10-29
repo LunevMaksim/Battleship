@@ -1,21 +1,21 @@
 package org.battleship.model;
 
 public class Cell {
+    private State state;
 
-    private boolean maybeShip;
-    private boolean state;
-
-
-    public boolean isMaybeShip() {
-        return maybeShip;
+    public Cell(State state) {
+        this.state = state;
     }
-    public void setMaybeShip(boolean maybeShip) {
-        this.maybeShip = maybeShip;
-    }
-    public boolean isState() {
+
+    public State getState() {
         return state;
     }
-    public void setState(boolean state) {
+
+    public void setState(State state) {
         this.state = state;
+    }
+
+    public String getEmoji() {
+        return state.getEmoji();
     }
 }
