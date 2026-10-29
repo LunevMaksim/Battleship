@@ -3,30 +3,29 @@ package org.battleship.model;
 import static org.battleship.model.State.*;
 
 public class Board {
-    private final String[][] grid;
     private final int size;
+    private final Cell[][] grid;
 
     public Board(int size) {
         this.size = size;
-        this.grid = new String[size][size];
+        this.grid = new Cell[size][size];
         initializeBoard();
+    }
+
+    private void initializeBoard() {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                grid[i][j] = new Cell(EMPTY_SPACE);
+            }
+        }
     }
 
     public int getSize() {
         return size;
     }
 
-    public String[][] getGrid() {
+    public Cell[][] getGrid() {
         return grid;
-    }
-
-    // Инициализация пустого поля
-    private void initializeBoard() {
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                grid[i][j] = EMPTY_SPACE.getEmoji();
-            }
-        }
     }
 
     // Печать матрицы
@@ -49,11 +48,7 @@ public class Board {
         for (int i = 0; i < size; i++) {
             System.out.print(rowLetter + "  ");
             for (int j = 0; j < size; j++) {
-                if (grid[i][j] == null) {
-                    System.out.print(EMPTY_SPACE.getEmoji() + " ");
-                } else {
-                    System.out.print(grid[i][j] + " ");
-                }
+                System.out.print(grid[i][j].getEmoji() + " ");
             }
             System.out.println();
             rowLetter++;
@@ -61,26 +56,26 @@ public class Board {
     }
 
     // Проверка выхода за границы
-    public boolean isOutOfBounds(int len, int height, char direction, int deck) {
+    public boolean isOutOfBounds(int row, int col, char direction, int deck) {
         switch (direction) {
-            case 'r': return height + deck > size;
-            case 'l': return height - deck + 1 < 0;
-            case 'd': return len + deck > size;
-            case 'u': return len - deck + 1 < 0;
+            case 'r': return col + deck > size;
+            case 'l': return col - deck + 1 < 0;
+            case 'd': return row + deck > size;
+            case 'u': return row - deck + 1 < 0;
             default: return true;
         }
     }
 
-    // Проверка касаний и пересечений
-    public boolean canPlaceShip(int len, int height, char direction, int deck) {
-        int startX = len, endX = len;
-        int startY = height, endY = height;
+    // Проверка ауры (касаний и пересечений)
+    public boolean canPlaceShip(int row, int col, char direction, int deck) {
+        int startX = row, endX = row;
+        int startY = col, endY = col;
 
         switch (direction) {
-            case 'r': endY = height + deck - 1; break;
-            case 'l': startY = height - deck + 1; break;
-            case 'd': endX = len + deck - 1; break;
-            case 'u': startX = len - deck + 1; break;
+            case 'r': endY = col + deck - 1; break;
+            case 'l': startY = col - deck + 1; break;
+            case 'd': endX = row + deck - 1; break;
+            case 'u': startX = row - deck + 1; break;
         }
 
         for (int i = startX; i <= endX; i++) {
@@ -92,7 +87,7 @@ public class Board {
 
                 for (int r = rMin; r <= rMax; r++) {
                     for (int c = cMin; c <= cMax; c++) {
-                        if (grid[r][c].equals(PART_OF_SHIP.getEmoji())) {
+                        if (grid[r][c].getState().equals(PART_OF_SHIP)) {
                             return false;
                         }
                     }
@@ -102,33 +97,33 @@ public class Board {
         return true;
     }
 
-    // Размещение корабля на доске
-    public void placeShip(int len, int height, char direction, int deck) {
+    // Размещение корабля
+    public void placeShip(int row, int col, char direction, int deck) {
         switch (direction) {
             case 'r':
-                for (int i = height; i < height + deck; i++) grid[len][i] = PART_OF_SHIP.getEmoji();
+                for (int j = col; j < col + deck; j++) grid[row][j].setState(PART_OF_SHIP);
                 break;
             case 'd':
-                for (int i = len; i < len + deck; i++) grid[i][height] = PART_OF_SHIP.getEmoji();
+                for (int i = row; i < row + deck; i++) grid[i][col].setState(PART_OF_SHIP);
                 break;
             case 'l':
-                for (int i = height; i > height - deck; i--) grid[len][i] = PART_OF_SHIP.getEmoji();
+                for (int j = col; j > col - deck; j--) grid[row][j].setState(PART_OF_SHIP);
                 break;
             case 'u':
-                for (int i = len; i > len - deck; i--) grid[i][height] = PART_OF_SHIP.getEmoji();
+                for (int i = row; i > row - deck; i--) grid[i][col].setState(PART_OF_SHIP);
                 break;
         }
     }
 
-    // Проверка, остались ли еще живые корабли на поле
-    public boolean hasShipsAlive() {
+    // Проверка, остались ли живые корабли
+    public boolean hasAliveShips() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (grid[i][j].equals(PART_OF_SHIP.getEmoji())) {
-                    return false;
+                if (grid[i][j].getState().equals(PART_OF_SHIP)) {
+                    return true;
                 }
             }
         }
-        return true;
+        return false;
     }
 }
