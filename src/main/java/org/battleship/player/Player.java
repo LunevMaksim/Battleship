@@ -39,7 +39,7 @@ public class Player {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (grid[i][j].equals(org.battleship.model.State.PART_OF_SHIP.getEmoji())) {
+                if (grid[i][j].getState().equals(org.battleship.model.State.PART_OF_SHIP)) {
                     return true;
                 }
             }
