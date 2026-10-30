@@ -5,15 +5,15 @@ import org.battleship.model.State;
 
 public class PlacementValidator {
 
-
     public boolean isOutOfBounds(Board board, int row, int col, char direction, int deck) {
         int size = board.getSize();
         switch (direction) {
             case 'r': return col + deck > size;
-            case 'l': return col - deck + 1 < 0; // Восстановлен минус
+            case 'l': return col - deck + 1 < 0;
             case 'd': return row + deck > size;
-            case 'u': return row - deck + 1 < 0; // Восстановлен минус
-            default: return true;
+            case 'u': return row - deck + 1 < 0;
+            default:
+                throw new IllegalArgumentException("Недопустимое направление: " + direction);
         }
     }
 
@@ -22,12 +22,13 @@ public class PlacementValidator {
         int startX = row, endX = row;
         int startY = col, endY = col;
 
-        // Восстановлены знаки минус для границ корабля
         switch (direction) {
             case 'r': endY = col + deck - 1; break;
             case 'l': startY = col - deck + 1; break;
             case 'd': endX = row + deck - 1; break;
             case 'u': startX = row - deck + 1; break;
+            default:
+                throw new IllegalArgumentException("Недопустимое направление: " + direction);
         }
 
         var grid = board.getGrid();
