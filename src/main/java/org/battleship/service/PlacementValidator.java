@@ -5,24 +5,24 @@ import org.battleship.model.State;
 
 public class PlacementValidator {
 
-    // Проверка выхода за границы доски
+
     public boolean isOutOfBounds(Board board, int row, int col, char direction, int deck) {
         int size = board.getSize();
         switch (direction) {
             case 'r': return col + deck > size;
-            case 'l': return col - deck + 1 < 0;
+            case 'l': return col - deck + 1 < 0; // Восстановлен минус
             case 'd': return row + deck > size;
-            case 'u': return row - deck + 1 < 0;
+            case 'u': return row - deck + 1 < 0; // Восстановлен минус
             default: return true;
         }
     }
 
-    // Проверка пересечений и касаний
     public boolean canPlaceShip(Board board, int row, int col, char direction, int deck) {
         int size = board.getSize();
         int startX = row, endX = row;
         int startY = col, endY = col;
 
+        // Восстановлены знаки минус для границ корабля
         switch (direction) {
             case 'r': endY = col + deck - 1; break;
             case 'l': startY = col - deck + 1; break;

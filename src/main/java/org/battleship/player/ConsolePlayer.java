@@ -1,12 +1,11 @@
 package org.battleship.player;
 
 import org.battleship.model.Coordinate;
-import org.battleship.model.State;
 
 import java.util.Scanner;
 
 public class ConsolePlayer extends Player {
-    private static final char ASCII_OFFSET = 'a';
+    private static final char ASCII_OFFSET = 'а'; // Или 'a' в зависимости от раскладки (лучше английская 'a')
     private final Scanner scanner;
 
     public ConsolePlayer(int id, int boardSize, Scanner scanner) {
@@ -14,7 +13,6 @@ public class ConsolePlayer extends Player {
         this.scanner = scanner;
     }
 
-    // Запрос координат для обычного выстрела
     public Coordinate inputCoordinateForHit() {
         int size = currBoard.getSize();
         while (true) {
@@ -28,7 +26,8 @@ public class ConsolePlayer extends Player {
             }
 
             try {
-                int row = move[0].charAt(0) - ASCII_OFFSET;
+                // Исправлено: возвращены знаки минус
+                int row = move[0].charAt(0) - 'a'; // или ASCII_OFFSET
                 int col = Integer.parseInt(move[1]) - 1;
 
                 if (row < 0 || row >= size || col < 0 || col >= size) {
@@ -42,7 +41,6 @@ public class ConsolePlayer extends Player {
         }
     }
 
-    // Запрос на использование мины
     public boolean askToUseMine() {
         if (!hasMine) return false;
 

@@ -1,5 +1,4 @@
 package org.battleship.service;
 
-public class GameSettings {
-    // Для настроек игры(константы и прочее)
+public record GameSettings(int boardSize, long seed) {
 }

@@ -1,18 +1,20 @@
 package org.battleship.player;
 
 import org.battleship.model.Board;
+import org.battleship.model.PlayerKnowledge;
 import org.battleship.model.State;
 
 public abstract class Player {
     protected final int id;
     protected final Board currBoard;
-    protected final Board enemyBoard;
     protected boolean hasMine;
+    protected final PlayerKnowledge knowledge;
+
 
     public Player(int id, int boardSize) {
         this.id = id;
         this.currBoard = new Board(boardSize);
-        this.enemyBoard = new Board(boardSize);
+        this.knowledge = new PlayerKnowledge(boardSize);
         this.hasMine = true;
     }
 
@@ -20,17 +22,19 @@ public abstract class Player {
         return id;
     }
 
+
     public Board getCurrBoard() {
         return currBoard;
     }
 
-    public Board getEnemyBoard() {
-        return enemyBoard;
+    public PlayerKnowledge getKnowledge() {
+        return knowledge;
     }
 
     public boolean hasMine() {
         return hasMine;
     }
+
 
     public void useMine() {
         this.hasMine = false;

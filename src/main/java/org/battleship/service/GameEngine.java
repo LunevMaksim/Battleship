@@ -9,20 +9,24 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class GameEngine {
+    private final Random random;
+    private final GameSettings settings;
     private static final int BOARD_SIZE = 10;
     private static final char ASCII_OFFSET = 'a';
 
     private final Scanner scanner;
-    private final Random random;
     private final PlacementValidator validator;
     private ConsolePlayer player1;
     private ConsolePlayer player2;
 
-    public GameEngine() {
+
+    public GameEngine(GameSettings settings) {
+        this.settings = settings;
+        this.random = new Random(settings.seed());
         this.scanner = new Scanner(System.in);
-        this.random = new Random();
         this.validator = new PlacementValidator();
     }
+
 
     public void start() {
         System.out.println("=== ИГРА МОРСКОЙ БОЙ (OOP ARCHITECTURE) ===");
@@ -44,9 +48,9 @@ public class GameEngine {
 
             System.out.println("\n=== ХОД ИГРОКА " + activePlayer.getId() + " ===");
             System.out.println("Ваши корабли:");
-            activePlayer.getCurrBoard().printMatrix();
+            BoardPrinter.print(activePlayer.getCurrBoard()); // Используем BoardPrinter
             System.out.println("\nПоле противника:");
-            activePlayer.getEnemyBoard().printMatrix();
+            BoardPrinter.print(activePlayer.getKnowledge().getKnowledgeBoard()); // Используем BoardPrinter
             System.out.println();
 
             boolean wantToUseMine = activePlayer.askToUseMine();
@@ -60,14 +64,14 @@ public class GameEngine {
             } else {
                 Coordinate hit = activePlayer.inputCoordinateForHit();
                 var enemyCurrGrid = opponent.getCurrBoard().getGrid();
-                var activeEnemyGrid = activePlayer.getEnemyBoard().getGrid();
+                var activeKnowledgeGrid = activePlayer.getKnowledge().getKnowledgeBoard().getGrid();
 
                 int r = hit.row();
                 int c = hit.col();
 
                 if (enemyCurrGrid[r][c].getState().equals(State.PART_OF_SHIP)) {
                     System.out.println("Вы попали!");
-                    activeEnemyGrid[r][c].setState(State.HIT);
+                    activeKnowledgeGrid[r][c].setState(State.HIT);
                     enemyCurrGrid[r][c].setState(State.HIT);
 
                     if (!opponent.hasAliveShips()) {
@@ -76,7 +80,7 @@ public class GameEngine {
                     }
                 } else {
                     System.out.println("Вы промахнулись!");
-                    activeEnemyGrid[r][c].setState(State.MISS);
+                    activeKnowledgeGrid[r][c].setState(State.MISS);
                     enemyCurrGrid[r][c].setState(State.MISS);
                     currentMove = (currentMove == 1) ? 2 : 1;
                 }
@@ -113,6 +117,7 @@ public class GameEngine {
                 }
 
                 try {
+                    // Восстановлены знаки минус
                     int row = parts[0].charAt(0) - ASCII_OFFSET;
                     int col = Integer.parseInt(parts[1]) - 1;
                     direction = parts[2].charAt(0);
@@ -148,7 +153,7 @@ public class GameEngine {
         boolean hitInShip = false;
 
         var enemyGrid = opponent.getCurrBoard().getGrid();
-        var activeEnemyGrid = activePlayer.getEnemyBoard().getGrid();
+        var activeKnowledgeGrid = activePlayer.getKnowledge().getKnowledgeBoard().getGrid();
 
         int startX = Math.max(0, hit.row() - 1);
         int endX = Math.min(BOARD_SIZE - 1, hit.row() + 1);
@@ -160,10 +165,10 @@ public class GameEngine {
                 if (enemyGrid[i][j].getState().equals(State.PART_OF_SHIP)) {
                     hitInShip = true;
                     enemyGrid[i][j].setState(State.HIT);
-                    activeEnemyGrid[i][j].setState(State.HIT);
+                    activeKnowledgeGrid[i][j].setState(State.HIT);
                 } else if (enemyGrid[i][j].getState().equals(State.EMPTY_SPACE)) {
                     enemyGrid[i][j].setState(State.MISS);
-                    activeEnemyGrid[i][j].setState(State.MISS);
+                    activeKnowledgeGrid[i][j].setState(State.MISS);
                 }
             }
         }
@@ -175,9 +180,9 @@ public class GameEngine {
         System.out.println("=== ПОБЕДИТЕЛЬ - ИГРОК " + winner.getId() + " ===");
 
         System.out.println("Поле игрока 1:");
-        player1.getCurrBoard().printMatrix();
+        BoardPrinter.print(player1.getCurrBoard());
         System.out.println("Поле игрока 2:");
-        player2.getCurrBoard().printMatrix();
+        BoardPrinter.print(player2.getCurrBoard());
     }
 
     private void cleaning() {

@@ -28,34 +28,6 @@ public class Board {
         return grid;
     }
 
-    // Печать матрицы
-    public void printMatrix() {
-        System.out.print("    ");
-        for (int j = 1; j <= 3; j++) {
-            System.out.print(j + "  ");
-        }
-        System.out.print(" ");
-        for (int j = 4; j <= 7; j++) {
-            System.out.print(j + "  ");
-        }
-        System.out.print(" ");
-        for (int j = 8; j <= 10; j++) {
-            System.out.print(j + "  ");
-        }
-        System.out.println();
-
-        char rowLetter = 'a';
-        for (int i = 0; i < size; i++) {
-            System.out.print(rowLetter + "  ");
-            for (int j = 0; j < size; j++) {
-                System.out.print(grid[i][j].getEmoji() + " ");
-            }
-            System.out.println();
-            rowLetter++;
-        }
-    }
-
-    // Проверка выхода за границы
     public boolean isOutOfBounds(int row, int col, char direction, int deck) {
         switch (direction) {
             case 'r': return col + deck > size;
@@ -66,7 +38,6 @@ public class Board {
         }
     }
 
-    // Проверка ауры (касаний и пересечений)
     public boolean canPlaceShip(int row, int col, char direction, int deck) {
         int startX = row, endX = row;
         int startY = col, endY = col;
@@ -97,7 +68,6 @@ public class Board {
         return true;
     }
 
-    // Размещение корабля
     public void placeShip(int row, int col, char direction, int deck) {
         switch (direction) {
             case 'r':
@@ -115,7 +85,6 @@ public class Board {
         }
     }
 
-    // Проверка, остались ли живые корабли
     public boolean hasAliveShips() {
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
