@@ -1,13 +1,13 @@
 package org.battleship.player;
 
 import org.battleship.model.Board;
-import org.battleship.model.Cell;
+import org.battleship.model.State;
 
-public class Player {
-    private final int id;
-    private final Board currBoard;
-    private final Board enemyBoard;
-    private boolean hasMine;
+public abstract class Player {
+    protected final int id;
+    protected final Board currBoard;
+    protected final Board enemyBoard;
+    protected boolean hasMine;
 
     public Player(int id, int boardSize) {
         this.id = id;
@@ -28,18 +28,19 @@ public class Player {
         return enemyBoard;
     }
 
-    public boolean getHasMine() {
+    public boolean hasMine() {
         return hasMine;
     }
 
-    // Проверка, остались ли у игрока живые корабли
-    public boolean hasAliveShips() {
-        Cell[][] grid = currBoard.getGrid();
-        int size = currBoard.getSize();
+    public void useMine() {
+        this.hasMine = false;
+    }
 
+    public boolean hasAliveShips() {
+        int size = currBoard.getSize();
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-                if (grid[i][j].getState().equals(org.battleship.model.State.PART_OF_SHIP)) {
+                if (currBoard.getGrid()[i][j].getState().equals(State.PART_OF_SHIP)) {
                     return true;
                 }
             }

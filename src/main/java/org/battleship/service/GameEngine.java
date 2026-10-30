@@ -52,7 +52,7 @@ public class GameEngine {
             boolean wantToUseMine = activePlayer.askToUseMine();
 
             if (wantToUseMine) {
-                activePlayer.getHasMine();
+                activePlayer.useMine();
                 boolean hitInShip = hitMine(activePlayer, opponent);
                 if (!hitInShip) {
                     currentMove = (currentMove == 1) ? 2 : 1;

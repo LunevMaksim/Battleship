@@ -1,6 +1,7 @@
 package org.battleship.player;
 
 import org.battleship.model.Coordinate;
+import org.battleship.model.State;
 
 import java.util.Scanner;
 
@@ -15,9 +16,9 @@ public class ConsolePlayer extends Player {
 
     // Запрос координат для обычного выстрела
     public Coordinate inputCoordinateForHit() {
-        int size = getCurrBoard().getSize();
+        int size = currBoard.getSize();
         while (true) {
-            System.out.println("Игрок " + getId() + ", введите координаты для удара (например: a 1): ");
+            System.out.println("Игрок " + id + ", введите координаты для удара (например: a 1): ");
             String input = scanner.nextLine().trim();
             String[] move = input.split(" ");
 
@@ -43,7 +44,7 @@ public class ConsolePlayer extends Player {
 
     // Запрос на использование мины
     public boolean askToUseMine() {
-        if (!getHasMine()) return false;
+        if (!hasMine) return false;
 
         System.out.println("БОНУС: у вас есть мина для удара радиусом 3х3. Хотите использовать? (да/нет):");
         String answer = scanner.nextLine().trim().toLowerCase();
